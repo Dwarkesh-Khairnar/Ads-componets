@@ -3168,7 +3168,7 @@ function AutoAdRunner({ children, Code, skipTime, waiting }) {
   }, [showOverlay, inactiveter]);
   const redirectto = () => {
     try {
-      axios_default.get("/api/ad/clicks-advertiser");
+      axios_default.get("https://ad-services.vercel.app/api/ad/clicks-advertiser");
     } catch (err) {
       console.error(err.response?.status, err.response?.data, err.response?.headers);
     } finally {
