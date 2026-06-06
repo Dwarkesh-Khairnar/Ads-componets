@@ -53,10 +53,7 @@ This project demonstrates the ability to:
 ## Getting Started
 
 ```bash
-git clone https://github.com/Dwarkesh-Khairnar/Ads-componets.git
-cd Ads-componets
-npm install
-npm start
+npm install Dwarkesh-Khairnar/Ads-componets
 ```
 
 ---
