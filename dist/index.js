@@ -3094,9 +3094,9 @@ var {
 // src/Ad_auto_runing_component.jsx
 function AutoAdRunner({ children, Code, skipTime, waiting }) {
   const [showOverlay, setShowOverlay] = useState(false);
-  const [timesing, setTimesing2] = useState(true);
-  const [cross, setCross2] = useState(false);
-  const [cundown, setCundown2] = useState("");
+  const [timesing, setTimesing] = useState(true);
+  const [cross, setCross] = useState(false);
+  const [cundown, setCundown] = useState("");
   const [adlink, setAdlink] = useState("");
   const [targetlink, settargetlink] = useState("");
   const [resetskip, setresetskip] = useState(0);
@@ -3106,16 +3106,16 @@ function AutoAdRunner({ children, Code, skipTime, waiting }) {
   const skiptime = skipTime;
   let skiptimetemp = skiptime;
   const skipstart = () => {
-    setTimesing2(true);
+    setTimesing(true);
     if (!showOverlay) setShowOverlay(true);
-    setCross2(false);
+    setCross(false);
     for (let index = skiptime; index >= 0; index--) {
       setTimeout(() => {
         console.log("timeout:", index);
-        setCundown2(index);
+        setCundown(index);
         if (index == 0) {
-          setTimesing2(false);
-          setCross2(true);
+          setTimesing(false);
+          setCross(true);
         }
       }, (skiptimetemp - index) * 1e3);
     }
@@ -3175,52 +3175,363 @@ function AutoAdRunner({ children, Code, skipTime, waiting }) {
       window.location.href = targetlink;
     }
   };
-  return /* @__PURE__ */ React2.createElement("div", { className: "app relative" }, children, showOverlay && /* @__PURE__ */ React2.createElement(
+  const styles2 = {
+    appContainer: {
+      position: "relative"
+    },
+    overlayBackdrop: {
+      position: "fixed",
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      zIndex: 50,
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      backgroundColor: "rgba(0, 0, 0, 0.7)",
+      backdropFilter: "blur(4px)",
+      cursor: "pointer"
+    },
+    overlayModal: {
+      position: "relative",
+      width: "100%",
+      maxWidth: "768px",
+      margin: "0 16px",
+      backgroundColor: "rgba(255, 255, 255, 0.95)",
+      borderRadius: "16px",
+      boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.25)",
+      border: "1px solid rgba(0, 0, 0, 0.1)",
+      overflow: "hidden"
+    },
+    modalHeader: {
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "space-between",
+      padding: "12px 20px",
+      backgroundColor: "rgba(255, 255, 255, 0.6)",
+      backdropFilter: "blur(4px)",
+      borderBottom: "1px solid rgba(0, 0, 0, 0.05)"
+    },
+    headerTitle: {
+      fontSize: "14px",
+      color: "#475569",
+      fontWeight: "600",
+      cursor: "pointer"
+    },
+    headerControls: {
+      display: "flex",
+      alignItems: "center",
+      gap: "12px"
+    },
+    countdownBadge: {
+      padding: "4px 12px",
+      borderRadius: "9999px",
+      backgroundColor: "#fef3c7",
+      color: "#92400e",
+      fontSize: "14px",
+      fontWeight: "500",
+      boxShadow: "0 1px 2px 0 rgba(0, 0, 0, 0.05)"
+    },
+    closeButton: {
+      height: "36px",
+      width: "36px",
+      position: "absolute",
+      right: "16px",
+      borderRadius: "9999px",
+      backgroundColor: "white",
+      color: "#475569",
+      transition: "all 0.2s ease",
+      border: "1px solid rgba(0, 0, 0, 0.05)",
+      boxShadow: "0 1px 2px 0 rgba(0, 0, 0, 0.05)",
+      cursor: "pointer",
+      fontSize: "24px",
+      fontWeight: "300",
+      padding: 0,
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center"
+    },
+    closeButtonHover: {
+      backgroundColor: "#fef2f2",
+      color: "#dc2626"
+    },
+    mediaContainer: {
+      width: "100%",
+      backgroundColor: "black",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      overflow: "hidden",
+      position: "relative",
+      height: "60vh"
+    },
+    clickableOverlay: {
+      height: "90%",
+      width: "100%",
+      position: "absolute",
+      cursor: "pointer",
+      bottom: "10px",
+      zIndex: 1
+    },
+    adImage: {
+      maxWidth: "100%",
+      maxHeight: "100%",
+      objectFit: "contain",
+      position: "relative",
+      zIndex: 0
+    },
+    adIframe: {
+      width: "100%",
+      height: "100%",
+      border: "none",
+      position: "relative",
+      zIndex: 0
+    },
+    modalFooter: {
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "space-between",
+      padding: "12px 24px",
+      backgroundColor: "rgba(255, 255, 255, 0.6)",
+      backdropFilter: "blur(4px)",
+      borderTop: "1px solid rgba(0, 0, 0, 0.05)"
+    },
+    footerText: {
+      fontSize: "12px",
+      color: "#71717a"
+    }
+  };
+  const [closeButtonHovered, setCloseButtonHovered] = useState(false);
+  return /* @__PURE__ */ React2.createElement(React2.Fragment, null, /* @__PURE__ */ React2.createElement("style", null, `
+                @media (min-width: 768px) {
+                    .media-container-responsive {
+                        height: 75vh !important;
+                    }
+                }
+                @media (min-width: 1024px) {
+                    .media-container-responsive {
+                        height: 85vh !important;
+                    }
+                }
+                @media (min-width: 1280px) {
+                    .media-container-responsive {
+                        height: 88vh !important;
+                    }
+                }
+            `), /* @__PURE__ */ React2.createElement("div", { style: styles2.appContainer }, children, showOverlay && /* @__PURE__ */ React2.createElement(
     "div",
     {
-      className: "fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm",
+      style: styles2.overlayBackdrop,
       onClick: redirectto
     },
     /* @__PURE__ */ React2.createElement(
       "div",
       {
-        className: "relative w-full max-w-3xl mx-4 bg-white/95 rounded-2xl shadow-2xl ring-1 ring-black/10 overflow-hidden",
+        style: styles2.overlayModal,
         onClick: (e) => e.stopPropagation()
       },
-      /* @__PURE__ */ React2.createElement("div", { className: "flex items-center justify-between px-5 py-3 bg-white/60 backdrop-blur-sm border-b border-black/5" }, /* @__PURE__ */ React2.createElement("div", { className: "text-sm text-slate-700 font-semibold", onClick: redirectto }, "Ad run by Dwarkesh & team"), /* @__PURE__ */ React2.createElement("div", { className: "flex items-center gap-3" }, timesing && /* @__PURE__ */ React2.createElement("div", { className: "px-3 py-1 rounded-full bg-amber-100 text-amber-800 text-sm font-medium shadow-sm" }, cundown), cross && /* @__PURE__ */ React2.createElement(
+      /* @__PURE__ */ React2.createElement("div", { style: styles2.modalHeader }, /* @__PURE__ */ React2.createElement("div", { style: styles2.headerTitle, onClick: redirectto }, "Ad run by Dwarkesh & team"), /* @__PURE__ */ React2.createElement("div", { style: styles2.headerControls }, timesing && /* @__PURE__ */ React2.createElement("div", { style: styles2.countdownBadge }, cundown), cross && /* @__PURE__ */ React2.createElement(
         "button",
         {
           type: "button",
           onClick: closeOverlay,
-          className: "h-9 w-9 absolute right-4 rounded-full bg-white text-slate-700 hover:bg-red-50 hover:text-red-600 transition ring-1 ring-black/5 shadow-sm z-52 cursor-pointer",
+          style: {
+            ...styles2.closeButton,
+            ...closeButtonHovered ? styles2.closeButtonHover : {}
+          },
+          onMouseEnter: () => setCloseButtonHovered(true),
+          onMouseLeave: () => setCloseButtonHovered(false),
           "aria-label": "Close"
         },
         "\xD7"
       ))),
-      /* @__PURE__ */ React2.createElement("div", { className: "w-full h-[60vh] md:h-[75vh] lg:h-[85vh] xl:h-[88vh] flex items-center justify-center overflow-hidden bg-black" }, /* @__PURE__ */ React2.createElement("div", { className: " h-[90%] w-full absolute cursor-pointer bottom-2.5", onClick: redirectto }), /\.(jpe?g|png|gif|webp|avif|svg)$/i.test(adlink) ? /* @__PURE__ */ React2.createElement(
+      /* @__PURE__ */ React2.createElement("div", { style: styles2.mediaContainer, className: "media-container-responsive" }, /* @__PURE__ */ React2.createElement("div", { style: styles2.clickableOverlay, onClick: redirectto }), /\.(jpe?g|png|gif|webp|avif|svg)$/i.test(adlink) ? /* @__PURE__ */ React2.createElement(
         "img",
         {
           src: adlink,
           alt: "Ad",
-          className: "max-w-full max-h-full object-contain",
+          style: styles2.adImage,
           draggable: false
         }
       ) : /* @__PURE__ */ React2.createElement(
         "iframe",
         {
-          className: "w-full h-full border-0",
+          style: styles2.adIframe,
           src: adlink,
           title: "Ad",
           allow: "autoplay; fullscreen"
         }
       )),
-      /* @__PURE__ */ React2.createElement("div", { className: "flex items-center justify-between px-6 py-3 bg-white/60 backdrop-blur-sm border-t border-black/5" }, /* @__PURE__ */ React2.createElement("div", { className: "text-xs text-slate-500" }, "Sponsored"), /* @__PURE__ */ React2.createElement("div", { className: "text-xs text-slate-500" }, "Click anywhere to continue"))
+      /* @__PURE__ */ React2.createElement("div", { style: styles2.modalFooter }, /* @__PURE__ */ React2.createElement("div", { style: styles2.footerText }, "Sponsored"), /* @__PURE__ */ React2.createElement("div", { style: styles2.footerText }, "Click anywhere to continue"))
     )
-  ));
+  )));
 }
 
 // src/Ad_click_running_component.jsx
 import { useState as useState2, useEffect as useEffect2, useRef as useRef2 } from "react";
+var styles = `
+  .click-ad-runner-trigger {
+    cursor: pointer;
+  }
+
+  .click-ad-runner-backdrop {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 50;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(4px);
+  }
+
+  .click-ad-runner-modal {
+    position: relative;
+    width: 100%;
+    max-width: 48rem;
+    margin-left: 1rem;
+    margin-right: 1rem;
+    background-color: rgba(255, 255, 255, 0.95);
+    border-radius: 1rem;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+  }
+
+  .click-ad-runner-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-left: 1.25rem;
+    padding-right: 1.25rem;
+    padding-top: 0.75rem;
+    padding-bottom: 0.75rem;
+    background-color: rgba(255, 255, 255, 0.6);
+    backdrop-filter: blur(4px);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  }
+
+  .click-ad-runner-header-text {
+    font-size: 0.875rem;
+    color: #475569;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  .click-ad-runner-header-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .click-ad-runner-countdown {
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+    padding-top: 0.25rem;
+    padding-bottom: 0.25rem;
+    border-radius: 9999px;
+    background-color: #fef3c7;
+    color: #92400e;
+    font-size: 0.875rem;
+    font-weight: 500;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  }
+
+  .click-ad-runner-close-button {
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+    border-radius: 0.375rem;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    font-weight: 500;
+    transition: background-color 0.2s, color 0.2s;
+  }
+
+  .click-ad-runner-close-button:not(:disabled) {
+    background-color: #e5e7eb;
+    color: #1f2937;
+  }
+
+  .click-ad-runner-close-button:not(:disabled):hover {
+    background-color: #d1d5db;
+  }
+
+  .click-ad-runner-close-button:disabled {
+    background-color: #f3f4f6;
+    color: #9ca3af;
+    cursor: not-allowed;
+  }
+
+  .click-ad-runner-content {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    background-color: black;
+  }
+
+  .click-ad-runner-content-mobile {
+    height: 60vh;
+  }
+
+  .click-ad-runner-content-tablet {
+    height: 75vh;
+  }
+
+  .click-ad-runner-content-laptop {
+    height: 85vh;
+  }
+
+  .click-ad-runner-content-desktop {
+    height: 88vh;
+  }
+
+  .click-ad-runner-clickable-overlay {
+    height: 90%;
+    width: 100%;
+    position: absolute;
+    bottom: 0.625rem;
+    cursor: pointer;
+  }
+
+  .click-ad-runner-image {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+  }
+
+  .click-ad-runner-iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+  }
+
+  @media (min-width: 768px) {
+    .click-ad-runner-content {
+      height: 75vh;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .click-ad-runner-content {
+      height: 85vh;
+    }
+  }
+
+  @media (min-width: 1280px) {
+    .click-ad-runner-content {
+      height: 88vh;
+    }
+  }
+`;
 function ClickAdRunner({ text, Code, skipTime }) {
   const [open, setOpen] = useState2(false);
   const [enabled, setEnabled] = useState2(false);
@@ -3236,16 +3547,14 @@ function ClickAdRunner({ text, Code, skipTime }) {
   const skiptime = skipTime;
   let skiptimetemp = skiptime;
   const startSkipCountdown = () => {
-    setTimesing(true);
+    setCounting(true);
     if (!showOverlay) setShowOverlay(true);
-    setCross(false);
     for (let index = skiptime; index >= 0; index--) {
       setTimeout(() => {
         console.log("timeout:", index);
-        setCundown(index);
+        setCountdown(index);
         if (index == 0) {
-          setTimesing(false);
-          setCross(true);
+          setCounting(false);
         }
       }, (skiptimetemp - index) * 1e3);
     }
@@ -3329,7 +3638,7 @@ function ClickAdRunner({ text, Code, skipTime }) {
     if (enableTimerRef.current) clearTimeout(enableTimerRef.current);
     if (inactivityTimerRef.current) clearTimeout(inactivityTimerRef.current);
   }, []);
-  return /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("span", { onClick: handleOpenClick, className: "cursor-pointer" }, text), open && /* @__PURE__ */ React.createElement("div", { className: "fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm", onClick: handleBackdropClick }, /* @__PURE__ */ React.createElement("div", { className: "relative w-full max-w-3xl mx-4 bg-white/95 rounded-2xl shadow-2xl ring-1 ring-black/10 overflow-hidden", onClick: (e) => e.stopPropagation() }, /* @__PURE__ */ React.createElement("div", { className: "flex items-center justify-between px-5 py-3 bg-white/60 backdrop-blur-sm border-b border-black/5" }, /* @__PURE__ */ React.createElement("div", { className: "text-sm text-slate-700 font-semibold", onClick: sendClickAndRedirect }, "Ad run by Dwarkesh & team"), /* @__PURE__ */ React.createElement("div", { className: "flex items-center gap-3" }, counting && /* @__PURE__ */ React.createElement("div", { className: "px-3 py-1 rounded-full bg-amber-100 text-amber-800 text-sm font-medium shadow-sm" }, countdown), /* @__PURE__ */ React.createElement("button", { type: "button", onClick: handleClose, disabled: !enabled, className: `px-3 py-2 rounded focus:outline-none ${enabled ? "bg-gray-200 hover:bg-gray-300" : "bg-gray-100 text-gray-400 cursor-not-allowed"}` }, enabled ? "Close" : `Wait ${countdown}s`))), /* @__PURE__ */ React.createElement("div", { className: "w-full h-[60vh] md:h-[75vh] lg:h-[85vh] xl:h-[88vh] flex items-center justify-center overflow-hidden bg-black" }, /* @__PURE__ */ React.createElement("div", { className: " h-[90%] w-full absolute cursor-pointer bottom-2.5", onClick: sendClickAndRedirect }), /\.(jpe?g|png|gif|webp|avif|svg)$/i.test(adlink) ? /* @__PURE__ */ React.createElement("img", { src: adlink, alt: "Ad", className: "max-w-full max-h-full object-contain", draggable: false }) : /* @__PURE__ */ React.createElement("iframe", { className: "w-full h-full border-0", src: adlink, title: "Ad", allow: "autoplay; fullscreen" })))));
+  return /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("style", null, styles), /* @__PURE__ */ React.createElement("span", { onClick: handleOpenClick, className: "click-ad-runner-trigger" }, text), open && /* @__PURE__ */ React.createElement("div", { className: "click-ad-runner-backdrop", onClick: handleBackdropClick }, /* @__PURE__ */ React.createElement("div", { className: "click-ad-runner-modal", onClick: (e) => e.stopPropagation() }, /* @__PURE__ */ React.createElement("div", { className: "click-ad-runner-header" }, /* @__PURE__ */ React.createElement("div", { className: "click-ad-runner-header-text", onClick: sendClickAndRedirect }, "Ad run by Dwarkesh & team"), /* @__PURE__ */ React.createElement("div", { className: "click-ad-runner-header-actions" }, counting && /* @__PURE__ */ React.createElement("div", { className: "click-ad-runner-countdown" }, countdown), /* @__PURE__ */ React.createElement("button", { type: "button", onClick: handleClose, disabled: !enabled, className: "click-ad-runner-close-button" }, enabled ? "Close" : `Wait ${countdown}s`))), /* @__PURE__ */ React.createElement("div", { className: "click-ad-runner-content click-ad-runner-content-mobile" }, /* @__PURE__ */ React.createElement("div", { className: "click-ad-runner-clickable-overlay", onClick: sendClickAndRedirect }), /\.(jpe?g|png|gif|webp|avif|svg)$/i.test(adlink) ? /* @__PURE__ */ React.createElement("img", { src: adlink, alt: "Ad", className: "click-ad-runner-image", draggable: false }) : /* @__PURE__ */ React.createElement("iframe", { className: "click-ad-runner-iframe", src: adlink, title: "Ad", allow: "autoplay; fullscreen" })))));
 }
 
 // src/index.jsx
