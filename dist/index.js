@@ -3636,8 +3636,8 @@ var styles2 = {
   }
 };
 export {
-  AutoAdRunner as AdAutoRunningComponent,
-  ClickAdRunner as AdClickRunningComponent,
-  AutoFloatingBan as AdFloatingBarComponent,
-  AutoStickyban as AdStickyBanComponent
+  AutoFloatingBan,
+  AutoStickyban,
+  ClickAdRunner,
+  AutoAdRunner as default
 };
